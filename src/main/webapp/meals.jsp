@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"
-         import="ru.javawebinar.topjava.controller.MealsController, javax.servlet.Servlet.*" %>
+         import="ru.javawebinar.topjava.web.MealServlet, javax.servlet.Servlet.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 
@@ -56,7 +56,6 @@
 <c:if test="${!empty meals}">
     <table class ="tg">
     <tr>
-        <th width="60">ID</th>
         <th width="120">Date/Time</th>
         <th width="120">Description</th>
         <th width="100">Calories</th>
@@ -64,7 +63,6 @@
     </tr>
     <c:forEach items = "${meals}" var = "meal">
         <tr style="${ meal.isExceed() ? "background-color:#ff6666" : "background-color:#99ffbb"}">
-            <td>${meal.getId()}</td>
             <td>${meal.getDateTime().toString().replace('T', ' ')}</td>
             <td>${meal.getDescription()} </td>
             <td>${meal.getCalories()}</td>

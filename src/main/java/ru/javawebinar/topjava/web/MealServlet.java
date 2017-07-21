@@ -1,32 +1,52 @@
-package ru.javawebinar.topjava.controller;
+package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.javawebinar.topjava.dao.MealsInMemoryDaoImp;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.model.MealWithExceed;
+import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 
-public class MealsController extends HttpServlet{
+public class MealServlet extends HttpServlet{
 
     private MealsInMemoryDaoImp dao;
 
     private static String MEALS = "meals.jsp";
     private static String ADD_OR_EDIT = "mealdata.jsp";
-    private static final Logger LOG = LoggerFactory.getLogger(MealsController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MealServlet.class);
 
 
- public MealsController(){
-     dao = new MealsInMemoryDaoImp();
- }
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+
+        dao = new MealsInMemoryDaoImp();
+
+        dao.addMeal( new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500));
+        dao.addMeal( new Meal(LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000));
+        dao.addMeal( new Meal(LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500));
+        dao.addMeal( new Meal(LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000));
+        dao.addMeal( new Meal(LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500));
+        dao.addMeal( new Meal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510));
+        dao.addMeal( new Meal(LocalDateTime.of(2015, Month.JUNE, 01, 10, 0), "Завтрак", 500));
+        dao.addMeal( new Meal(LocalDateTime.of(2015, Month.JUNE, 01, 13, 0), "Обед", 1000));
+        dao.addMeal( new Meal(LocalDateTime.of(2015, Month.JUNE, 01, 20, 0), "Ужин", 500));
+    }
+    
 
 
 
@@ -36,35 +56,35 @@ public class MealsController extends HttpServlet{
         String action = request.getParameter("action");
 
         switch (action){
-            case "delete": {
+            case "delete":
                 int mealId = Integer.parseInt(request.getParameter("mealId"));
                 dao.removeMeal(mealId);
-                forward = MEALS;
                 LOG.debug("action delete");
                 response.sendRedirect("index.jsp");
-            }
+
             break;
 
-            case "edit": {
+            case "edit":
                 forward = ADD_OR_EDIT;
-                int mealId = Integer.parseInt(request.getParameter("mealId"));
+                 mealId = Integer.parseInt(request.getParameter("mealId"));
                 Meal meal = dao.getMealById(mealId);
                 LOG.debug("action edit");
                 request.setAttribute("meal", meal);
-            }
+
             break;
 
-            case "mealsList": {
+            case "mealsList":
                 forward = MEALS;
                 LOG.debug("action meals list");
-                request.setAttribute("meals", dao.listMeals());
-            }
+                List<MealWithExceed> list = MealsUtil.getFilteredWithExceeded(dao.listMeals(), LocalTime.of(0, 1), LocalTime.of(23,59), 2000);
+                request.setAttribute("meals", list);
+
             break;
 
-            default:  {
+            default:
                 LOG.debug("action add meal");
                 forward = ADD_OR_EDIT;
-            }
+
             break;
         }
 
@@ -101,7 +121,8 @@ public class MealsController extends HttpServlet{
 
         LOG.debug("forward to meals list (doPost)");
         RequestDispatcher view = request.getRequestDispatcher(MEALS);
-        request.setAttribute("meals", dao.listMeals());
+        List<MealWithExceed> list = MealsUtil.getFilteredWithExceeded(dao.listMeals(), LocalTime.of(0, 1), LocalTime.of(23,59), 2000);
+        request.setAttribute("meals", list);
         view.forward(request, response);
 
     }

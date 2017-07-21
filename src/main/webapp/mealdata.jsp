@@ -51,8 +51,6 @@
 
 <form method="POST" action='meals' name="frmAddMeal">
 
-    Meal ID : <input type="text" readonly="readonly" name="mealId"
-                     value="<c:out value="${meal.getId()}" />" /> <br />
     Date : <input
         type="datetime-local" name="dateTime"
         value="<c:out value="${meal.getDateTime()}" />" /> <br />

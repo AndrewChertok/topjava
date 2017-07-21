@@ -21,15 +21,7 @@ public class MealsInMemoryDaoImp implements MealsInMemoryDao{
  private ConcurrentHashMap<Integer, Meal> meals = new ConcurrentHashMap<>();
 
     {
-        meals.put(id.incrementAndGet(), new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500));
-        meals.put(id.incrementAndGet(), new Meal(LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000));
-        meals.put(id.incrementAndGet(), new Meal(LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500));
-        meals.put(id.incrementAndGet(), new Meal(LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000));
-        meals.put(id.incrementAndGet(), new Meal(LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500));
-        meals.put(id.incrementAndGet(), new Meal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510));
-        meals.put(id.incrementAndGet(), new Meal(LocalDateTime.of(2015, Month.JUNE, 01, 10, 0), "Завтрак", 500));
-        meals.put(id.incrementAndGet(), new Meal(LocalDateTime.of(2015, Month.JUNE, 01, 13, 0), "Обед", 1000));
-        meals.put(id.incrementAndGet(), new Meal(LocalDateTime.of(2015, Month.JUNE, 01, 20, 0), "Ужин", 500));
+
 
         meals.forEach((key, map)->map.setId(key));
     }
@@ -37,10 +29,10 @@ public class MealsInMemoryDaoImp implements MealsInMemoryDao{
 
     @Override
     public void addMeal(Meal meal) {
-        synchronized (meal) {
+
             meal.setId(id.incrementAndGet());
-            meals.put(id.get(), meal);
-        }
+            meals.put(meal.getId(), meal);
+
     }
 
     @Override
@@ -59,7 +51,7 @@ public class MealsInMemoryDaoImp implements MealsInMemoryDao{
     }
 
     @Override
-    public List<MealWithExceed> listMeals() {
-        return MealsUtil.getFilteredWithExceeded(meals.values().stream().collect(Collectors.toList()), LocalTime.of(0, 1), LocalTime.of(23, 59), 2000);
+    public List<Meal> listMeals() {
+        return meals.values().stream().collect(Collectors.toList());
     }
 }

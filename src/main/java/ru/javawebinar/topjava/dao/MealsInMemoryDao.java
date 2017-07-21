@@ -13,5 +13,5 @@ public interface MealsInMemoryDao {
     public void updateMeal(Meal meal, int id) ;
     public void removeMeal(int id) ;
     public Meal getMealById(int id) ;
-    public List<MealWithExceed> listMeals() ;
+    public List<Meal> listMeals() ;
 }
