@@ -24,7 +24,7 @@ public class SpringMain {
 
            Meal meal = new Meal(LocalDateTime.now(), "Обед", 2000);
            meal.setUserId(1);
-           meal = mealRestController.create(meal);
+            mealRestController.create(meal);
 
             System.out.println(mealRestController.getAll(2000));
 
