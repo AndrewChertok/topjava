@@ -22,10 +22,11 @@ public class SpringMain {
             adminUserController.create(new User(null, "userName", "email", "password", Role.ROLE_ADMIN));
             MealRestController mealRestController = appCtx.getBean(MealRestController.class);
 
-
            Meal meal = new Meal(LocalDateTime.now(), "Обед", 2000);
            meal.setUserId(1);
            meal = mealRestController.create(meal);
+
+            System.out.println(mealRestController.getAll(2000));
 
 
 

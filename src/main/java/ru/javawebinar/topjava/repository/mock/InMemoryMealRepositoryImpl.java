@@ -31,7 +31,11 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
 
     {
-        MealsUtil.MEALS.forEach(meal-> repository.put(counter.incrementAndGet(), meal));
+        MealsUtil.MEALS.forEach(meal-> {
+            meal.setUserId(1);
+            repository.put(counter.incrementAndGet(), meal);
+
+        });
     }
 
 
@@ -44,8 +48,8 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
             meal.setId(counter.incrementAndGet());
 
          meal.setUserId(userId);
-         repository.put(meal.getId(), meal);
-        return repository.containsValue(meal)? meal : null;
+       return repository.put(meal.getId(), meal);
+
     }
 
     @Override
@@ -58,8 +62,7 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     @Override
     public Meal get(int id, int userId) {
         LOG.info("get meal by id {}", id);
-        Meal meal = repository.get(id);
-            return meal;
+        return repository.get(id);
     }
 
     @Override

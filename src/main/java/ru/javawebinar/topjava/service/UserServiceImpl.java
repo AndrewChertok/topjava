@@ -17,17 +17,19 @@ import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 public class UserServiceImpl implements UserService {
 
 
-    private InMemoryUserRepositoryImpl repository;
-
     @Autowired
     @Qualifier("inMemoryUserRepository")
-    public void setRepository(InMemoryUserRepositoryImpl repository) {
-    }
+    private InMemoryUserRepositoryImpl repository;
 
+
+    public void setRepository(InMemoryUserRepositoryImpl repository) {
+
+    }
 
 
     @Override
     public User save(User user) {
+
         return repository.save(user);
     }
 
