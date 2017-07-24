@@ -34,7 +34,6 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
         MealsUtil.MEALS.forEach(meal-> {
             meal.setUserId(1);
             repository.put(counter.incrementAndGet(), meal);
-
         });
     }
 
