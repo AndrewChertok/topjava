@@ -21,6 +21,27 @@
     <h2>Meal list</h2>
     <a href="meals?action=create">Add Meal</a>
     <hr/>
+
+
+    <div>
+        <form method="get" action="meals">
+            <input type="hidden" name="action" value="filter"/>
+            <label>From Date:</label>
+            <input type="date" name="fromDate"/>
+            <label>To Date:</label>
+            <input type="date" name="toDate"/>
+            <label>From Time:</label>
+            <input type="time" name="fromTime"/>
+            <label>To Time:</label>
+            <input type="time" name="toTime"/>
+            <button type="submit">Filter</button>
+            <button type="reset" onclick="location.href='meals?action='">Clear</button>
+        </form>
+
+    </div>
+
+
+
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
         <tr>

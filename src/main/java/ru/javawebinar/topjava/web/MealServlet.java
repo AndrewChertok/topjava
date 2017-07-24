@@ -4,11 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ru.javawebinar.topjava.AuthorizedUser;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.repository.mock.InMemoryMealRepositoryImpl;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
+import ru.javawebinar.topjava.web.user.ProfileRestController;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -16,7 +18,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
@@ -27,14 +31,16 @@ public class MealServlet extends HttpServlet {
 
     private MealRestController controller;
 
+    ConfigurableApplicationContext appCtx;
+
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
 
-        try(ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml")){
+         appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
             controller = appCtx.getBean(MealRestController.class);
-        }
+
 
     }
 
@@ -42,15 +48,15 @@ public class MealServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
 
-
-
         String id = request.getParameter("id");
+
 
         Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
                 Integer.valueOf(request.getParameter("calories")));
 
+        meal.setUserId(AuthorizedUser.id());
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
 
         controller.create(meal);
@@ -61,7 +67,27 @@ public class MealServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
 
+
+
         switch (action == null ? "all" : action) {
+
+            case "filter":
+
+                String fromDate = request.getParameter("fromDate");
+                String toDate = request.getParameter("toDate");
+                String fromTime = request.getParameter("fromTime");
+                String toTime = request.getParameter("toTime");
+
+
+                request.setAttribute("meals" , controller.getBetweenDateTimes(
+                        LocalDateTime.of(!fromDate.equals("") ? LocalDate.parse(fromDate) : LocalDate.MIN, !fromTime.equals("") ? LocalTime.parse(fromTime) : LocalTime.MIN),
+                        LocalDateTime.of(!toDate.equals("") ? LocalDate.parse(toDate) : LocalDate.MAX, !toTime.equals("") ? LocalTime.parse(toTime) : LocalTime.MAX),
+                        MealsUtil.DEFAULT_CALORIES_PER_DAY));
+
+
+                request.getRequestDispatcher("meals.jsp").forward(request, response );
+                break;
+
             case "delete":
                 int id = getId(request);
                 log.info("Delete {}", id);
@@ -81,7 +107,7 @@ public class MealServlet extends HttpServlet {
                 log.info("getAll");
                 request.setAttribute("meals",
                         controller.getAll(MealsUtil.DEFAULT_CALORIES_PER_DAY));
-                request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                request.getRequestDispatcher("meals.jsp").forward(request, response);
                 break;
         }
     }
@@ -91,6 +117,8 @@ public class MealServlet extends HttpServlet {
         return Integer.valueOf(paramId);
     }
 
-
-
+    @Override
+    public void destroy() {
+        appCtx.close();
+    }
 }

@@ -14,6 +14,7 @@ import java.time.Month;
 import java.util.Arrays;
 
 public class SpringMain {
+    /*
     public static void main(String[] args) {
         // java 7 Automatic resource management
         try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml")) {
@@ -32,4 +33,5 @@ public class SpringMain {
 
         }
     }
+    */
 }

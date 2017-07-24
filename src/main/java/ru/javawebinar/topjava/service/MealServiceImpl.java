@@ -72,11 +72,5 @@ public class MealServiceImpl implements MealService {
     }
 
 
-    @Override
-    public Collection<MealWithExceed> getBetweenDates(LocalDate startDate, LocalDate endDate, int caloriesPerDay) {
-        int userId = AuthorizedUser.id();
-        return MealsUtil.getWithExceeded(repository.getBetweenDates(startDate, endDate, userId), caloriesPerDay);
-    }
-
 
 }

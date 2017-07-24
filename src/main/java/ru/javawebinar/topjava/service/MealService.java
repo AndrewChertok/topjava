@@ -23,7 +23,6 @@ public interface MealService {
 
     Collection<MealWithExceed> getBetweenDateTimes(LocalDateTime startDateTime, LocalDateTime endDateTime, int caloriesPerDay);
 
-     Collection<MealWithExceed> getBetweenDates(LocalDate startDate, LocalDate endDate, int caloriesPerDay) ;
 
 
 
