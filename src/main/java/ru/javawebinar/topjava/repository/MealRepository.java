@@ -10,6 +10,8 @@ public interface MealRepository {
 
     Meal save(Meal meal, int userId);
 
+    Meal update(Meal meal, int userId);
+
     boolean delete(int id, int userId);
 
     Meal get(int id, int userId);

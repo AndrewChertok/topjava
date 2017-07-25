@@ -31,41 +31,35 @@ public class MealServiceImpl implements MealService {
 
 
     @Override
-    public Meal save(Meal meal) {
-      int userId = AuthorizedUser.id();
+    public Meal save(Meal meal, int userId) {
         return repository.save(meal, userId);
     }
 
     @Override
-    public void update(Meal meal) {
-        int userId = AuthorizedUser.id();
-         repository.save(meal, userId);
+    public void update(Meal meal, int userId) {
+        checkNotFoundWithId(repository.save(meal, userId), meal.getId());
     }
 
 
     @Override
-    public void delete(int id) throws NotFoundException{
-        int userId = AuthorizedUser.id();
+    public void delete(int id, int userId) throws NotFoundException{
        checkNotFoundWithId(repository.delete(id, userId), id);
     }
 
 
     @Override
-    public Meal get(int id) throws NotFoundException{
-        int userId = AuthorizedUser.id();
+    public Meal get(int id, int userId) throws NotFoundException{
         return checkNotFoundWithId(repository.get(id, userId), id);
     }
 
 
     @Override
-    public Collection<MealWithExceed> getAll(int caloriesPerDay) {
-        int userId = AuthorizedUser.id();
-        return MealsUtil.getWithExceeded(repository.getAll(userId), caloriesPerDay );
+    public Collection<MealWithExceed> getAll(int userId) {
+        return MealsUtil.getWithExceeded(repository.getAll(userId), MealsUtil.DEFAULT_CALORIES_PER_DAY);
     }
 
     @Override
-    public Collection<MealWithExceed> getBetweenDateTimes(LocalDateTime startDateTime, LocalDateTime endDateTime, int caloriesperDay) {
-        int userId = AuthorizedUser.id();
+    public Collection<MealWithExceed> getBetweenDateTimes(LocalDateTime startDateTime, LocalDateTime endDateTime, int caloriesperDay, int userId) {
         return MealsUtil.getFilteredWithExceededByCycle(repository.getBetweenDates(startDateTime.toLocalDate(), endDateTime.toLocalDate(), userId), startDateTime.toLocalTime(), endDateTime.toLocalTime(), caloriesperDay);
     }
 

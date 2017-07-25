@@ -14,7 +14,7 @@ import java.time.Month;
 import java.util.Arrays;
 
 public class SpringMain {
-    /*
+
     public static void main(String[] args) {
         // java 7 Automatic resource management
         try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml")) {
@@ -27,11 +27,10 @@ public class SpringMain {
            meal.setUserId(1);
             mealRestController.create(meal);
 
-            System.out.println(mealRestController.getAll(2000));
+            System.out.println(mealRestController.getAll());
 
 
 
         }
     }
-    */
 }

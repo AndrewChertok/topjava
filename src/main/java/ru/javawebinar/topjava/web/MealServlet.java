@@ -6,11 +6,9 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.AuthorizedUser;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.repository.mock.InMemoryMealRepositoryImpl;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
-import ru.javawebinar.topjava.web.user.ProfileRestController;
+
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -31,7 +29,7 @@ public class MealServlet extends HttpServlet {
 
     private MealRestController controller;
 
-    ConfigurableApplicationContext appCtx;
+  private  ConfigurableApplicationContext appCtx;
 
 
     @Override
@@ -50,13 +48,13 @@ public class MealServlet extends HttpServlet {
 
         String id = request.getParameter("id");
 
-
         Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
                 Integer.valueOf(request.getParameter("calories")));
 
         meal.setUserId(AuthorizedUser.id());
+
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
 
         controller.create(meal);
@@ -106,7 +104,7 @@ public class MealServlet extends HttpServlet {
             default:
                 log.info("getAll");
                 request.setAttribute("meals",
-                        controller.getAll(MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                        controller.getAll());
                 request.getRequestDispatcher("meals.jsp").forward(request, response);
                 break;
         }
@@ -119,6 +117,7 @@ public class MealServlet extends HttpServlet {
 
     @Override
     public void destroy() {
+        super.destroy();
         appCtx.close();
     }
 }

@@ -10,17 +10,17 @@ import java.util.Collection;
 public interface MealService {
 
 
-    Meal save(Meal meal);
+    Meal save(Meal meal, int userId);
 
-    void update(Meal meal);
+    void update(Meal meal, int userId);
 
-    void delete(int id) throws NotFoundException;
+    void delete(int id, int userId) throws NotFoundException;
 
-    Meal get(int id) throws NotFoundException;
+    Meal get(int id, int userId) throws NotFoundException;
 
-    Collection<MealWithExceed> getAll(int caloriesPerDay);
+    Collection<MealWithExceed> getAll(int userId);
 
-    Collection<MealWithExceed> getBetweenDateTimes(LocalDateTime startDateTime, LocalDateTime endDateTime, int caloriesPerDay);
+    Collection<MealWithExceed> getBetweenDateTimes(LocalDateTime startDateTime, LocalDateTime endDateTime, int caloriesPerDay, int userId);
 
 
 
