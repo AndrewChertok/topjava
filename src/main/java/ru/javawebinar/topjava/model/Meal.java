@@ -8,8 +8,6 @@ public class Meal extends BaseEntity{
 
     private Integer userId;
 
-    private Integer id;
-
     private final LocalDateTime dateTime;
 
     private final String description;
