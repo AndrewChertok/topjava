@@ -18,21 +18,21 @@ import javax.sql.DataSource;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
+
 @Profile(Profiles.POSTGRES_DB)
 @Repository
 public class JdbcMealRepositoryImpl implements MealRepository {
 
-    private static final RowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
+    protected static final RowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
 
+    protected final JdbcTemplate jdbcTemplate;
+
+    protected final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    protected final SimpleJdbcInsert insertMeal;
 
     @Autowired
-    private final JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    private final SimpleJdbcInsert insertMeal;
-
     public JdbcMealRepositoryImpl(DataSource dataSource, JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.insertMeal = new SimpleJdbcInsert(dataSource)
                 .withTableName("meals")
@@ -65,6 +65,8 @@ public class JdbcMealRepositoryImpl implements MealRepository {
         }
         return meal;
     }
+
+
 
     @Override
     public boolean delete(int id, int userId) {

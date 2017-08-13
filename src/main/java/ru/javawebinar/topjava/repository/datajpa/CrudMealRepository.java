@@ -1,7 +1,5 @@
 package ru.javawebinar.topjava.repository.datajpa;
 
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,8 +15,11 @@ public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
     @Override
     Meal save(Meal meal);
 
-    @Override
-    Meal findOne(Integer id);
+//    @Override
+//    Meal finOne(Integer id);       Implementation for HW05 5.1
+
+    @Query("SELECT m FROM Meal m LEFT JOIN FETCH m.user WHERE m.id =:id")
+    Meal findOne(@Param("id")int id);          // Implementation for HW05 Optional 7.2
 
     @Transactional
     @Modifying
@@ -26,7 +27,7 @@ public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
     int delete(@Param("id") int id, @Param("userId") int userId);
 
 
-    @Modifying
+
     @Query("SELECT m FROM Meal m WHERE m.user.id =:userId ORDER BY m.dateTime DESC")
     List<Meal> findAll(@Param("userId") int userId);
 
