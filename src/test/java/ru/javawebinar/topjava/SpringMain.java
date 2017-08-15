@@ -18,7 +18,7 @@ public class SpringMain {
     public static void main(String[] args) {
         // java 7 Automatic resource management
         try (ClassPathXmlApplicationContext appCtx = new ClassPathXmlApplicationContext()) {
-            appCtx.getEnvironment().setActiveProfiles(Profiles.JDBC, Profiles.POSTGRES_DB);
+            appCtx.getEnvironment().setActiveProfiles(Profiles.JDBC, Profiles.REPOSITORY_IMPLEMENTATION);
             appCtx.setConfigLocations("spring/spring-app.xml","spring/mock.xml");
             appCtx.refresh();
             System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));

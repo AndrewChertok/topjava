@@ -23,7 +23,7 @@ public class DataJpaMealRepositoryImpl implements MealRepository {
         if(!meal.isNew() && get(meal.getId(), userId) == null){
             return null;
         }
-        meal.setUser(crudUserRepository.findOne(userId));
+        meal.setUser(crudUserRepository.getOne(userId));
         return crudMealRepository.save(meal);
     }
 
@@ -46,5 +46,11 @@ public class DataJpaMealRepositoryImpl implements MealRepository {
     @Override
     public List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId) {
         return crudMealRepository.getBetween(startDate, endDate, userId);
+    }
+
+    @Override
+    public Meal getWithUser(int id, int userId) {
+        Meal meal = crudMealRepository.getWithUser(id);
+        return meal != null && meal.getUser().getId() == userId ? meal : null;
     }
 }

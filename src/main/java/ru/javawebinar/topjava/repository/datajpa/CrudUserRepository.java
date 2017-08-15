@@ -22,11 +22,14 @@ public interface CrudUserRepository extends JpaRepository<User, Integer> {
     @Transactional
     User save(User user);
 
-    @Query("SELECT u FROM User u LEFT JOIN FETCH u.meals WHERE u.id =:userId")
-    User findOne(@Param("userId") Integer id);
+    @Override
+    User findOne(Integer id);
 
     @Override
     List<User> findAll(Sort sort);
 
     User getByEmail(String email);
+
+    @Query("SELECT u FROM User u LEFT JOIN FETCH u.meals WHERE u.id = :userId")
+    User getWithMeals(@Param("userId") int userId);
 }

@@ -15,17 +15,13 @@ public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
     @Override
     Meal save(Meal meal);
 
-//    @Override
-//    Meal finOne(Integer id);       Implementation for HW05 5.1
-
-    @Query("SELECT m FROM Meal m LEFT JOIN FETCH m.user WHERE m.id =:id")
-    Meal findOne(@Param("id")int id);          // Implementation for HW05 Optional 7.2
+    @Override
+    Meal findOne(Integer id);
 
     @Transactional
     @Modifying
     @Query("DELETE FROM Meal m WHERE m.id =:id AND m.user.id =:userId")
     int delete(@Param("id") int id, @Param("userId") int userId);
-
 
 
     @Query("SELECT m FROM Meal m WHERE m.user.id =:userId ORDER BY m.dateTime DESC")
@@ -35,4 +31,10 @@ public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
     @SuppressWarnings("JpaQlInspection")
     @Query("SELECT m from Meal m WHERE m.user.id=:userId AND m.dateTime BETWEEN :startDate AND :endDate ORDER BY m.dateTime DESC")
     List<Meal> getBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, @Param("userId") int userId);
+
+
+    @Query("SELECT m FROM Meal m LEFT JOIN FETCH m.user WHERE m.id =:id")
+    Meal getWithUser(@Param("id")int id);
+
+
 }
