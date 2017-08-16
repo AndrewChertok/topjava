@@ -15,15 +15,14 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
 import javax.sql.DataSource;
-import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.List;
 
 
 
-@Profile(Profiles.POSTGRES_DB)
+
 @Repository
-public abstract class JdbcMealRepositoryImpl implements MealRepository {
+public abstract class JdbcMealRepositoryImpl<T> implements MealRepository {
 
     protected static final RowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
 
@@ -49,7 +48,7 @@ public abstract class JdbcMealRepositoryImpl implements MealRepository {
                 .addValue("id", meal.getId())
                 .addValue("description", meal.getDescription())
                 .addValue("calories", meal.getCalories())
-                .addValue("date_time", toLocalDateTime(meal.getDateTime()))
+                .addValue("date_time", toDbDateTime(meal.getDateTime()))
                 .addValue("user_id", userId);
 
         if (meal.isNew()) {
@@ -91,7 +90,7 @@ public abstract class JdbcMealRepositoryImpl implements MealRepository {
     public List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId) {
         return jdbcTemplate.query(
                 "SELECT * FROM meals WHERE user_id=?  AND date_time BETWEEN  ? AND ? ORDER BY date_time DESC",
-                ROW_MAPPER, userId, toLocalDateTime(startDate), toLocalDateTime(endDate));
+                ROW_MAPPER, userId, toDbDateTime(startDate), toDbDateTime(endDate));
     }
 
     @Override
@@ -99,7 +98,5 @@ public abstract class JdbcMealRepositoryImpl implements MealRepository {
         return null;
     }
 
-    protected <T> Object toLocalDateTime(LocalDateTime dateTime){
-        return  dateTime;
-    }
+    protected abstract T toDbDateTime(LocalDateTime dateTime);
 }
