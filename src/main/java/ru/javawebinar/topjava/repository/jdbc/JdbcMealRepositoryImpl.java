@@ -93,10 +93,6 @@ public abstract class JdbcMealRepositoryImpl<T> implements MealRepository {
                 ROW_MAPPER, userId, toDbDateTime(startDate), toDbDateTime(endDate));
     }
 
-    @Override
-    public Meal getWithUser(int id, int userId) {
-        return null;
-    }
 
     protected abstract T toDbDateTime(LocalDateTime dateTime);
 }
