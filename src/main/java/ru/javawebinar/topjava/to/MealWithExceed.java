@@ -1,5 +1,9 @@
 package ru.javawebinar.topjava.to;
 
+
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
 import java.time.LocalDateTime;
 
 public class MealWithExceed {
@@ -13,7 +17,11 @@ public class MealWithExceed {
 
     private final boolean exceed;
 
-    public MealWithExceed(Integer id, LocalDateTime dateTime, String description, int calories, boolean exceed) {
+    public MealWithExceed( @JsonSetter("id") Integer id,
+                           @JsonSetter("dateTime") LocalDateTime dateTime,
+                           @JsonSetter("description") String description,
+                           @JsonSetter("calories") int calories,
+                           @JsonSetter("exceed") boolean exceed) {
         this.id = id;
         this.dateTime = dateTime;
         this.description = description;
@@ -21,22 +29,27 @@ public class MealWithExceed {
         this.exceed = exceed;
     }
 
+    @JsonGetter("id")
     public Integer getId() {
         return id;
     }
 
+    @JsonGetter("dateTime")
     public LocalDateTime getDateTime() {
         return dateTime;
     }
 
+    @JsonGetter("description")
     public String getDescription() {
         return description;
     }
 
+    @JsonGetter("calories")
     public int getCalories() {
         return calories;
     }
 
+    @JsonGetter("exceed")
     public boolean isExceed() {
         return exceed;
     }
