@@ -98,8 +98,25 @@ public class MealRestControllerTest extends AbstractControllerTest{
               mealService.getBetweenDates(startDateTime.toLocalDate(), endDateTime.toLocalDate(), USER_ID),
               startDateTime.toLocalTime(), endDateTime.toLocalTime(),USER.getCaloriesPerDay()))));
 
+    }
 
+    @Test
+    public void testGetBetweenOptional() throws Exception {
 
+        LocalDateTime startDateTime = LocalDateTime.of(2015, Month.JANUARY, 03, 07, 00, 00);
+        LocalDateTime endDateTime = LocalDateTime.of(2017, Month.JULY, 03, 14, 00, 00);
+
+      TestUtil.print(mockMvc.perform(get(REST_URL + "optional")
+                .param("startDate", startDateTime.toLocalDate().toString())
+                .param("endDate", endDateTime.toLocalDate().toString())
+              .param("startTime", startDateTime.toLocalTime().toString())
+              .param("endTime", endDateTime.toLocalTime().toString()))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+      .andExpect(MATCHER_WITH_EXCEED.contentListMatcher(MealsUtil.getFilteredWithExceeded(
+              mealService.getBetweenDates(startDateTime.toLocalDate(), endDateTime.toLocalDate(), USER_ID),
+              startDateTime.toLocalTime(), endDateTime.toLocalTime(),USER.getCaloriesPerDay()))));
     }
 
 }
