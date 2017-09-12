@@ -1,6 +1,23 @@
 var ajaxUrl = "ajax/admin/users/";
 var datatableApi;
 
+
+function enableUser(chkbox, id) {
+    var enabled = chkbox.is(":checked");
+    $.ajax({
+        url: ajaxUrl + id,
+        type: 'POST',
+        data: 'enabled=' + enabled,
+        success: function () {
+            chkbox.closest('tr').toggleClass('disabled');
+            successNoty(enabled ? 'Enabled' : 'Disabled');
+        },
+        error: function () {
+            $(chkbox).prop("checked", !enabled);
+        }
+    });
+}
+
 // $(document).ready(function () {
 $(function () {
     datatableApi = $("#datatable").DataTable({
