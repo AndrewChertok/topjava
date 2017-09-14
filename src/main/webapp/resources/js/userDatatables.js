@@ -7,7 +7,7 @@ function enableUser(chkbox, id) {
     $.ajax({
         url: ajaxUrl + id,
         type: 'POST',
-        data: 'enabled=' + enabled,
+        data: 'enable=' + enabled,
         success: function () {
             chkbox.closest('tr').toggleClass('disabled');
             successNoty(enabled ? 'Enabled' : 'Disabled');
