@@ -20,6 +20,11 @@ import java.util.StringJoiner;
 @RequestMapping(value = "/ajax/profile/meals")
 public class MealAjaxController extends AbstractMealController {
 
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Meal get(@PathVariable("id") int id){
+       return super.get(id);
+    }
+
     @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<MealWithExceed> getAll() {
@@ -33,7 +38,7 @@ public class MealAjaxController extends AbstractMealController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createOrUpdate(MealWithExceed mealWithExceed, BindingResult result) {
+    public ResponseEntity<String> createOrUpdate(Meal meal, BindingResult result) {
 
         if(result.hasErrors()){
             StringJoiner joiner = new StringJoiner("<br>");
@@ -49,10 +54,10 @@ public class MealAjaxController extends AbstractMealController {
             return new ResponseEntity<>(joiner.toString(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        if (mealWithExceed.isNew()) {
-            super.create(MealsUtil.asModel(mealWithExceed));
+        if (meal.isNew()) {
+            super.create(meal);
         }else{
-            super.update(MealsUtil.asModel(mealWithExceed), mealWithExceed.getId());
+            super.update(meal, meal.getId());
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
