@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.web;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -13,6 +14,7 @@ import ru.javawebinar.topjava.util.UserUtil;
 import ru.javawebinar.topjava.web.user.AbstractUserController;
 
 import javax.validation.Valid;
+import javax.xml.crypto.Data;
 
 @Controller
 public class RootController extends AbstractUserController {
@@ -49,18 +51,25 @@ public class RootController extends AbstractUserController {
         if (result.hasErrors()) {
             return "profile";
         } else {
-            super.update(userTo, AuthorizedUser.id());
-            AuthorizedUser.get().update(userTo);
-            status.setComplete();
-            return "redirect:meals";
+            try {
+                super.update(userTo, AuthorizedUser.id());
+                AuthorizedUser.get().update(userTo);
+                status.setComplete();
+                return "redirect:meals";
+            }catch(DataIntegrityViolationException e){
+                result.rejectValue("email", DUPLICATE_EXCEPTION);
+                return "profile";
+            }
         }
     }
 
     @GetMapping("/register")
     public String register(ModelMap model) {
-        model.addAttribute("userTo", new UserTo());
-        model.addAttribute("register", true);
-        return "profile";
+
+            model.addAttribute("userTo", new UserTo());
+            model.addAttribute("register", true);
+            return "profile";
+
     }
 
     @PostMapping("/register")
@@ -69,9 +78,15 @@ public class RootController extends AbstractUserController {
             model.addAttribute("register", true);
             return "profile";
         } else {
-            super.create(UserUtil.createNewFromTo(userTo));
-            status.setComplete();
-            return "redirect:login?message=app.registered&username=" + userTo.getEmail();
+            try {
+                super.create(UserUtil.createNewFromTo(userTo));
+                status.setComplete();
+                return "redirect:login?message=app.registered&username=" + userTo.getEmail();
+            }catch(DataIntegrityViolationException e){
+                result.rejectValue("email", DUPLICATE_EXCEPTION);
+                model.addAttribute("register", true);
+                return "profile";
+            }
         }
     }
 }
