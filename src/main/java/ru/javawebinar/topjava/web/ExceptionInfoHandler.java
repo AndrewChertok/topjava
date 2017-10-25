@@ -6,6 +6,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.util.ValidationUtil;
@@ -45,6 +46,12 @@ public class ExceptionInfoHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
     public ErrorInfo handleArgumentNotValid(HttpServletRequest req, Exception e) {
+        return logAndGetErrorInfo(req, e, true);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BindException.class)
+    public ErrorInfo handleBindException(HttpServletRequest req, Exception e) {
         return logAndGetErrorInfo(req, e, true);
     }
 
