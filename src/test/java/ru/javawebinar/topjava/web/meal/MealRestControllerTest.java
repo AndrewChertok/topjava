@@ -4,14 +4,14 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
-
 import java.util.Arrays;
-
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -29,6 +29,35 @@ public class MealRestControllerTest extends AbstractControllerTest {
 
     @Autowired
     private MealService service;
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    public void testUpdateDuplicateDate() throws Exception{
+        Meal testMeal = getUpdated();
+        testMeal.setDateTime(MEAL2.getDateTime());
+        testMeal.setUser(USER);
+        mockMvc.perform(put(REST_URL+MEAL1_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(testMeal))
+                .with(userHttpBasic(USER)))
+        .andExpect(status().isConflict())
+        .andDo(print());
+
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    public void testCreateDuplicateDate() throws Exception{
+        Meal testMeal = getCreated();
+        testMeal.setDateTime(MEAL2.getDateTime());
+        mockMvc.perform(post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(testMeal))
+                .with(userHttpBasic(USER)))
+                .andExpect(status().isConflict())
+                .andDo(print());
+
+    }
 
     @Test
     public void testGet() throws Exception {

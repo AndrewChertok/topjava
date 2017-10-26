@@ -22,7 +22,7 @@ import java.util.List;
 public class AdminAjaxController extends AbstractUserController {
 
     @Autowired
-    MessageSource messageSource;
+   private MessageSource messageSource;
 
     @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)

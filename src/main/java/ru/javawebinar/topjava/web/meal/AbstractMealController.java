@@ -20,6 +20,8 @@ import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 public abstract class AbstractMealController {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
+    protected static final String DUPLICATE_DATE_TIME = "exception.sameDateTime";
+
     @Autowired
     private MealService service;
 
